@@ -22,7 +22,7 @@ const alternateUrl = isEn ? alternate : `/en${alternate === '/' ? '/' : alternat
     <link rel="alternate" hreflang="en" href={`https://iamentrepreneur.github.io${isEn ? current : alternateUrl}`} />
     <link rel="alternate" hreflang="x-default" href={`https://iamentrepreneur.github.io${isEn ? alternate : current}`} />
     <meta property="og:type" content="website" /><meta property="og:title" content={`${title} · ${author}`} /><meta property="og:description" content={description} /><meta property="og:url" content={`https://iamentrepreneur.github.io${current}`} /><meta property="og:site_name" content={isEn ? "Ilya Volkov — Portfolio" : "Илья Волков — Портфолио"} /><meta property="og:locale" content={isEn ? "en_US" : "ru_RU"} /><meta property="og:locale:alternate" content={isEn ? "ru_RU" : "en_US"} /><meta property="og:image" content={ogImage} /><meta property="og:image:type" content="image/png" /><meta property="og:image:width" content="1200" /><meta property="og:image:height" content="630" /><meta property="og:image:alt" content={isEn ? "Ilya Volkov — Senior PHP / Backend Developer portfolio" : "Портфолио Ильи Волкова — Senior PHP / Backend Developer"} /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content={`${title} · ${author}`} /><meta name="twitter:description" content={description} /><meta name="twitter:image" content={ogImage} /><meta name="twitter:image:alt" content={isEn ? "Ilya Volkov — Senior PHP / Backend Developer portfolio" : "Портфолио Ильи Волкова — Senior PHP / Backend Developer"} />
-    <script is:inline>try{const t=localStorage.getItem('theme');if(t==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
+    <script is:inline>try{const t=localStorage.getItem('theme');document.documentElement.dataset.theme=t==='dark'||t==='light'?t:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}catch(e){document.documentElement.dataset.theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}</script>
   </head>
   <body>
     <a class="skip" href="#main">{isEn ? "Skip to content" : "Перейти к содержимому"}</a>
@@ -36,7 +36,9 @@ const alternateUrl = isEn ? alternate : `/en${alternate === '/' ? '/' : alternat
     <script is:inline>
       const b=document.getElementById('theme-toggle');
       const sync=()=>{const d=document.documentElement.dataset.theme==='dark';b.setAttribute('aria-pressed',String(d));b.setAttribute('aria-label',d?b.dataset.darkLabel:b.dataset.lightLabel)};sync();
-      b.addEventListener('click',()=>{const d=document.documentElement.dataset.theme!=='dark';if(d)document.documentElement.dataset.theme='dark';else delete document.documentElement.dataset.theme;try{localStorage.setItem('theme',d?'dark':'light')}catch(e){}sync()});
+      const systemTheme=matchMedia('(prefers-color-scheme: dark)');
+      systemTheme.addEventListener('change',e=>{let saved;try{saved=localStorage.getItem('theme')}catch(_){}if(saved!=='dark'&&saved!=='light'){document.documentElement.dataset.theme=e.matches?'dark':'light';sync()}});
+      b.addEventListener('click',()=>{const d=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=d?'dark':'light';try{localStorage.setItem('theme',d?'dark':'light')}catch(e){}sync()});
     </script>
   </body>
 </html>
