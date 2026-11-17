@@ -21,4 +21,4 @@ jobs:
         id: deploy
         uses: withastro/action@v3
         with:
-          path: .
+          package-manager: npm
