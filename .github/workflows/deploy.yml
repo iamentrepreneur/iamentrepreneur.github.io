@@ -20,5 +20,3 @@ jobs:
       - name: Build and deploy Astro site
         id: deploy
         uses: withastro/action@v3
-        with:
-          package-manager: npm
