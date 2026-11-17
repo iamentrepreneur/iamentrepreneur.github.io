@@ -17,6 +17,13 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Verify npm project files
+        run: test -f package.json && test -f package-lock.json
       - name: Build and deploy Astro site
         id: deploy
         uses: withastro/action@v3
+        with:
+          path: .
+          package-manager: npm@10
