@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'; import {copy,projects} from '../../data';
+export function getStaticPaths(){return projects.map(project=>({params:{slug:project.slug},props:{project}}))}
+const {project}=Astro.props; const c=copy.ru;
+---
+<BaseLayout title={project.title} description={project.ru} lang="ru" alternate={`/projects/${project.slug}/`}>
+<article class="container section prose"><a class="back" href="/#projects">← {c.home}</a><p class="eyebrow">{c.caseTitle} · {c.private}</p><h1>{project.title}</h1><p class="lead">{project.ru}</p><p class="status">{project.statusRu}</p><h2>{c.task}</h2><p>{project.ru}</p><h2>{c.stackTitle}</h2><p>{project.stack}</p><h2>{c.state}</h2><p>{project.statusRu}. {c.todo}</p><p class="note">{c.note}</p></article>
+</BaseLayout>
+<style>.section{padding-block:72px}.back{color:var(--accent);text-decoration:none}.eyebrow{font-size:13px;color:var(--muted);margin-top:42px}h1{font-size:clamp(2.25rem,5vw,4.25rem);line-height:1.12;letter-spacing:-.035em;margin:.4em 0}.lead{font-size:20px;color:var(--muted)}h2{font-size:clamp(1.65rem,3vw,2.25rem);line-height:1.2;margin-top:52px}.status,.note{color:var(--muted)}.note{border-top:1px solid var(--border);padding-top:22px;margin-top:48px}</style>
