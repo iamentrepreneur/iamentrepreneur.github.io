@@ -26,4 +26,4 @@ jobs:
         uses: withastro/action@v3
         with:
           path: .
-          package-manager: npm@10
+          package-manager: npm@latest
