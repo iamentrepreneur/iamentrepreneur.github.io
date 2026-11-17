@@ -4,6 +4,7 @@ import { copy } from '../data';
 const { lang='ru', title, description, alternate='/', canonical } = Astro.props;
 const c = copy[lang];
 const isEn = lang === 'en';
+const author = isEn ? 'Ilya Volkov' : 'Илья Волков';
 const current = canonical ?? (isEn ? `/en${Astro.url.pathname === '/en/' ? '/' : Astro.url.pathname.replace(/^\/en/, '')}` : Astro.url.pathname);
 const alternateUrl = isEn ? alternate : `/en${alternate === '/' ? '/' : alternate}`;
 ---
@@ -11,30 +12,33 @@ const alternateUrl = isEn ? alternate : `/en${alternate === '/' ? '/' : alternat
 <html lang={lang}>
   <head>
     <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title} · Илья Волков</title><meta name="description" content={description} />
+    <title>{title} · {author}</title><meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="canonical" href={`https://iamentrepreneur.github.io${current}`} />
     <link rel="alternate" hreflang="ru" href={`https://iamentrepreneur.github.io${isEn ? alternate : current}`} />
     <link rel="alternate" hreflang="en" href={`https://iamentrepreneur.github.io${isEn ? current : alternateUrl}`} />
     <link rel="alternate" hreflang="x-default" href={`https://iamentrepreneur.github.io${isEn ? alternate : current}`} />
-    <meta property="og:type" content="website" /><meta property="og:title" content={`${title} · Илья Волков`} /><meta property="og:description" content={description} />
+    <meta property="og:type" content="website" /><meta property="og:title" content={`${title} · ${author}`} /><meta property="og:description" content={description} /><meta property="og:url" content={`https://iamentrepreneur.github.io${current}`} /><meta property="og:site_name" content={isEn ? "Ilya Volkov — Portfolio" : "Илья Волков — Портфолио"} /><meta property="og:locale" content={isEn ? "en_US" : "ru_RU"} /><meta property="og:locale:alternate" content={isEn ? "ru_RU" : "en_US"} />
     <script is:inline>try{const t=localStorage.getItem('theme');if(t==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
   </head>
   <body>
-    <a class="skip" href="#main">Skip to content</a>
+    <a class="skip" href="#main">{isEn ? "Skip to content" : "Перейти к содержимому"}</a>
     <header class="container header">
-      <a class="brand" href={isEn?'/en/':'/'}>Илья Волков</a>
+      <a class="brand" href={isEn?'/en/':'/'}>{author}</a>
       <nav aria-label={isEn?'Main navigation':'Основная навигация'}><a href={isEn?'/en/#projects':'/#projects'}>{c.projects}</a><a href={isEn?'/en/about/':'/about/'}>{c.about}</a></nav>
-      <div class="controls"><a href={isEn?alternate:`/en${alternate==='/'?'/':alternate}`} lang={isEn?'ru':'en'} aria-label={isEn?'Switch to Russian':'Switch to English'}>{isEn?'RU':'EN'}</a><button id="theme-toggle" type="button" aria-label={isEn?'Switch to dark theme':'Переключить тему'} aria-pressed="false">◐ <span>{isEn?'Theme':'Тема'}</span></button></div>
+      <div class="controls"><a href={isEn?alternate:`/en${alternate==='/'?'/':alternate}`} lang={isEn?'ru':'en'} aria-label={isEn?'Switch to Russian':'Switch to English'}>{isEn?'RU':'EN'}</a><button id="theme-toggle" type="button" data-dark-label={isEn?'Switch to light theme':'Включить светлую тему'} data-light-label={isEn?'Switch to dark theme':'Включить тёмную тему'} aria-label={isEn?'Switch to dark theme':'Включить тёмную тему'} aria-pressed="false"><span aria-hidden="true">◐</span> <span>{isEn?'Theme':'Тема'}</span></button></div>
     </header>
     <main id="main"><slot /></main>
     <footer class="container footer"><span>© {new Date().getFullYear()} Ilya Volkov</span><a href="https://github.com/iamentrepreneur" target="_blank" rel="noopener noreferrer">GitHub ↗</a></footer>
     <script is:inline>
       const b=document.getElementById('theme-toggle');
-      const sync=()=>{const d=document.documentElement.dataset.theme==='dark';b.setAttribute('aria-pressed',String(d))};sync();
+      const sync=()=>{const d=document.documentElement.dataset.theme==='dark';b.setAttribute('aria-pressed',String(d));b.setAttribute('aria-label',d?b.dataset.darkLabel:b.dataset.lightLabel)};sync();
       b.addEventListener('click',()=>{const d=document.documentElement.dataset.theme!=='dark';if(d)document.documentElement.dataset.theme='dark';else delete document.documentElement.dataset.theme;try{localStorage.setItem('theme',d?'dark':'light')}catch(e){}sync()});
     </script>
   </body>
 </html>
 <style>
- .header{min-height:76px;display:flex;align-items:center;gap:32px;border-bottom:1px solid var(--border)}.brand{text-decoration:none;font-weight:650}.header nav{display:flex;gap:24px;margin-left:auto}.header nav a,.controls a{color:var(--muted);text-decoration:none}.controls{display:flex;align-items:center;gap:18px}.controls button{font:inherit;color:var(--text);background:none;border:0;cursor:pointer}.footer{border-top:1px solid var(--border);padding-block:28px;display:flex;justify-content:space-between;color:var(--muted);font-size:14px}.footer a{color:var(--muted)}.skip{position:absolute;left:-999px;top:8px;background:var(--surface);padding:8px;z-index:5}.skip:focus{left:8px}@media(max-width:620px){.header{gap:12px;flex-wrap:wrap;padding-block:16px}.header nav{margin-left:auto;gap:14px}.controls{margin-left:auto}.controls button span{display:none}}
+ .header{min-height:76px;display:flex;align-items:center;gap:32px;border-bottom:1px solid var(--border)}.brand{text-decoration:none;font-weight:650}.header a:hover:not(.brand),.footer a:hover,.header nav a:hover,.controls a:hover{text-decoration:underline;text-underline-offset:.18em;color:var(--text)}.controls button:hover{color:var(--accent)}.header nav{display:flex;gap:24px;margin-left:auto}.header nav a,.controls a{color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;min-height:44px}.controls{display:flex;align-items:center;gap:18px}.controls button{font:inherit;color:var(--text);background:none;border:0;cursor:pointer;min-height:44px;padding:0 4px}.footer{border-top:1px solid var(--border);padding-block:28px;display:flex;justify-content:space-between;color:var(--muted);font-size:14px}.footer a{color:var(--muted)}.skip{position:absolute;left:-999px;top:8px;background:var(--surface);padding:8px;z-index:5}.skip:focus-visible{left:8px}@media(max-width:620px){.header{gap:8px 12px;flex-wrap:wrap;padding-block:12px}.header nav{margin-left:auto;gap:14px}.controls{margin-left:auto}.controls button span{display:none}}
 </style>
