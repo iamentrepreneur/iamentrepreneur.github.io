@@ -11,19 +11,26 @@ concurrency:
   group: pages
   cancel-in-progress: true
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
       - name: Verify npm project files
         run: test -f package.json && test -f package-lock.json
-      - name: Build and deploy Astro site
-        id: deploy
+      - name: Build Astro site
         uses: withastro/action@v3
         with:
           path: .
           package-manager: npm@latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
